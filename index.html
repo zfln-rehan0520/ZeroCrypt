@@ -8,7 +8,8 @@
 </head>
 <body>
   <div class="container">
-    <h1>🔐 Password Generator & Manager</h1>
+   <h1>🔐 Password <span>Generator</span> & Manager</h1>
+<p class="subtitle">// stored locally. encrypted. yours only.</p>
 
     <!-- Generator Section -->
     <section id="generator">
@@ -19,7 +20,10 @@
         <label><input type="checkbox" id="numbers" checked> Numbers</label>
         <label><input type="checkbox" id="symbols"> Symbols</label>
       </div>
-      <label>Length: <input type="number" id="length" value="12" min="6" max="64"/></label>
+      <div class="length-row">
+  <span>Length</span>
+  <input type="number" id="length" value="12" min="6" max="64"/>
+</div>
       <button id="generateBtn">Generate</button>
       <div class="result">
         <input type="text" id="generatedPassword" readonly />
