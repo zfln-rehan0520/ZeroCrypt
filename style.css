@@ -61,3 +61,9 @@ button:hover { background: #6d28d9; }
 }
 #passwordList li button { padding: 6px 12px; font-size: 0.8rem; background: #dc2626; }
 #passwordList li button:hover { background: #b91c1c; }
+#exportBtn {
+  background: #059669;
+  margin-bottom: 16px;
+  width: 100%;
+}
+#exportBtn:hover { background: #047857; }
