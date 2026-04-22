@@ -1,22 +1,53 @@
-# 🔐 Password Generator Manager (CSPRNG)
+<div align="center">
 
-A security-focused web utility designed for generating and managing cryptographically secure passwords. Unlike standard generators, this tool utilizes the **Web Crypto API** for high-entropy randomness.
+# 🔐 Password Generator & Manager
 
-## 🚀 Features
-- **CSPRNG Implementation**: Uses `window.crypto.getRandomValues()` instead of `Math.random()` to prevent predictability.
-- **Local Vault**: Persistent storage using `localStorage` for quick access to generated credentials.
-- **Customizable Entropy**: Adjustable length (8-50 chars) and character set toggles.
-- **Dark Mode UI**: Professional cybersecurity-themed interface.
+**A secure, browser-based password tool — no server, no signup, no tracking.**
 
-## 🛠️ Tech Stack
-- **Frontend**: HTML5, CSS3 (Modern Flexbox/Grid)
-- **Security**: Vanilla JavaScript with Web Crypto API
-- **Persistence**: Browser Storage API
+![Version](https://img.shields.io/badge/version-1.0.0-7c3aed)
+![License](https://img.shields.io/badge/license-MIT-a78bfa)
+![Security](https://img.shields.io/badge/encryption-AES--256--GCM-4ade80)
+![Platform](https://img.shields.io/badge/platform-browser-60a5fa)
 
-## 📋 Roadmap
-- [ ] **Phase 3**: Implement AES-GCM encryption for the local vault.
-- [ ] **Phase 4**: Add a Master Password authentication system.
-- [ ] **Phase 5**: Export vault to encrypted CSV/JSON.
+</div>
 
 ---
-*Created as part of the LYBERNET portfolio – 2026*
+
+## 📖 Overview
+
+**Password Generator & Manager** is a fully client-side web application that lets you generate cryptographically secure passwords and store them safely in your browser — all without any backend, database, or internet connection required.
+
+Every password is encrypted using **AES-256-GCM** (industry-standard encryption) derived from your personal master password via **PBKDF2 + SHA-256** with 310,000 iterations. Your data never leaves your device.
+
+---
+
+## ✨ Features
+
+### 🔑 Password Generation
+- Custom password **length** (6–64 characters)
+- Toggle **Uppercase**, **Lowercase**, **Numbers**, **Symbols**
+- Powered by `crypto.getRandomValues()` — cryptographically secure, not Math.random()
+- One-click **copy to clipboard**
+
+### 🔒 Encryption & Security
+- **AES-256-GCM** encryption for all saved passwords
+- **PBKDF2 + SHA-256** key derivation (310,000 rounds — OWASP recommended)
+- Unique **random salt + IV** per password — no two encryptions are alike
+- **SHA-256 fingerprinting** — identify passwords without exposing them
+- Master password **never stored** — only held in memory during session
+
+### 🗄️ Password Vault
+- Save unlimited passwords to your **local vault**
+- Passwords stored as **encrypted blobs** in localStorage
+- **Reveal on demand** — decrypts temporarily for 5 seconds, then hides again
+- Delete individual entries anytime
+
+### 🎨 UI / UX
+- Clean **dark theme** interface
+- Fully **responsive** — works on desktop and mobile
+- **No dependencies** — pure HTML, CSS, and Vanilla JS
+- **No build step** — just open `index.html` and go
+
+---
+
+## 🛡️ Security Architecture
