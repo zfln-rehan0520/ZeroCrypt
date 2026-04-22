@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔐 Password Generator & Manager 🔐 (v1.02)
+# 🔐 ZeroCrypt 🔐 (v1.02)
 
 **Built for people who take their privacy seriously.**
 
@@ -68,7 +68,7 @@ The "Root of Trust" in this application is your **Master Security Key**. It is d
 To maintain a professional Model-View-Controller (MVC) approach, the project is split into functional modules:
 
 ```text
-password-generator-manager/
+ZeroCrypt/
 ├── index.html        # Minimal UI skeleton
 ├── style.css         # Custom Dark-Mode UI (Orange & Cyan Theme)
 ├── crypto.js         # Encryption Engine (AES-GCM & PBKDF2 logic)
