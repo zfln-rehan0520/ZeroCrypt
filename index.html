@@ -3,28 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vault | Local Secure Manager</title>
+    <title>Vault | Secure Local Manager</title>
     <style>
-        :root { --bg: #0f0f0f; --paper: #1a1a1a; --accent: #00ff41; --text: #fafafa; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', monospace; display: flex; justify-content: center; padding: 20px; }
-        .container { width: 100%; max-width: 450px; background: var(--paper); padding: 25px; border-radius: 12px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h1 { border-bottom: 2px solid var(--accent); padding-bottom: 10px; font-size: 1.4rem; letter-spacing: 2px; }
-        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #333; background: #222; color: white; box-sizing: border-box; }
-        button { background: var(--accent); color: black; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; }
-        button:hover { background: #00cc33; transform: translateY(-2px); }
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #111; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.8rem; }
-        .vault-card { background: #222; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid var(--accent); position: relative; }
-        .delete-btn { position: absolute; top: 10px; right: 10px; color: #ff4444; cursor: pointer; background: none; width: auto; padding: 0; }
+        :root { 
+            --bg: #0d1117; 
+            --paper: #161b22; 
+            --accent: #00ff41; 
+            --text: #c9d1d9; 
+            --border: #30363d;
+        }
+
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container { 
+            width: 100%; 
+            max-width: 420px; 
+            background: var(--paper); 
+            padding: 30px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
+        }
+
+        h1 { 
+            text-align: center;
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 20px; 
+            font-size: 1.5rem; 
+            letter-spacing: 2px; 
+            margin-top: 0;
+            color: #fff;
+        }
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--accent);
+            margin-bottom: 5px;
+            margin-left: 2px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        input, button { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+            border-radius: 6px; 
+            border: 1px solid var(--border); 
+            background: #0d1117; 
+            color: white; 
+            box-sizing: border-box; 
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 5px rgba(0, 255, 65, 0.2);
+        }
+
+        /* Fixed Alignment for Checkboxes */
+        .options-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 12px; 
+            background: #0d1117; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 15px 0; 
+            border: 1px solid var(--border);
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center; /* Perfect vertical alignment */
+            gap: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #8b949e;
+        }
+
+        .option-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin: 0;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .option-item:hover { color: #fff; }
+
+        button { 
+            background: var(--accent); 
+            color: black; 
+            font-weight: 800; 
+            cursor: pointer; 
+            border: none; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        button:hover { 
+            background: #39ff14; 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(0, 255, 65, 0.2);
+        }
+
+        .vault-card { 
+            background: #21262d; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-top: 15px; 
+            border: 1px solid var(--border);
+            position: relative; 
+            transition: 0.2s;
+        }
+
+        .vault-card:hover { border-color: var(--accent); }
+
+        .delete-btn { 
+            position: absolute; 
+            top: 12px; 
+            right: 12px; 
+            color: #ff4444; 
+            cursor: pointer; 
+            background: none; 
+            border: none;
+            width: auto; 
+            padding: 0;
+            font-size: 0.8rem;
+        }
+
         .hidden { display: none; }
+        
+        .entry-label { font-weight: bold; color: #fff; display: block; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container" id="app">
-    </div>
+<div class="container" id="app"></div>
 
 <script>
-/** 1. ENCRYPTION ENGINE (CryptoEngine) **/
+/** 1. ENCRYPTION ENGINE **/
 const CryptoEngine = {
     ITERATIONS: 310000,
     async deriveKey(password, salt) {
@@ -69,7 +201,7 @@ const CryptoEngine = {
     }
 };
 
-/** 2. LOCAL STORAGE (VaultStorage) **/
+/** 2. LOCAL STORAGE **/
 const VaultStorage = {
     KEY: 'vlt_local_storage',
     get() { return JSON.parse(localStorage.getItem(this.KEY) || '[]'); },
@@ -78,23 +210,37 @@ const VaultStorage = {
     delete(id) { const d = this.get().filter(i => i.id != id); this.save(d); }
 };
 
-/** 3. INTERFACE LOGIC (UI) **/
+/** 3. INTERFACE LOGIC **/
 const UI = {
     render() {
         document.getElementById('app').innerHTML = `
             <h1>🔐 VAULT v1.0</h1>
-            <input type="password" id="m-pass" placeholder="Master Password">
+            
+            <label>Master Security Key</label>
+            <input type="password" id="m-pass" placeholder="••••••••">
+            
             <div class="options-grid">
-                <label><input type="checkbox" id="c-u" checked> ABC</label>
-                <label><input type="checkbox" id="c-l" checked> abc</label>
-                <label><input type="checkbox" id="c-n" checked> 123</label>
-                <label><input type="checkbox" id="c-s" checked> !@#</label>
+                <label class="option-item"><input type="checkbox" id="c-u" checked> Uppercase</label>
+                <label class="option-item"><input type="checkbox" id="c-l" checked> Lowercase</label>
+                <label class="option-item"><input type="checkbox" id="c-n" checked> Numbers</label>
+                <label class="option-item"><input type="checkbox" id="c-s" checked> Symbols</label>
             </div>
-            <input type="number" id="p-len" value="16" min="6" max="64">
-            <input type="text" id="l-in" placeholder="Service (e.g. Github)">
-            <button onclick="UI.handleSave()">GENERATE & SAVE</button>
+            
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+                <span style="font-size:0.8rem; opacity:0.6; white-space:nowrap;">Length:</span>
+                <input type="number" id="p-len" value="16" min="6" max="64" style="margin:0; width: 80px;">
+            </div>
+
+            <label>Service Name</label>
+            <input type="text" id="l-in" placeholder="e.g. GitHub">
+            
+            <button onclick="UI.handleSave()">Generate & Encrypt</button>
+            
             <div id="v-list"></div>
-            <button onclick="UI.export()" style="background:#333; color:white; margin-top:20px;">BACKUP VAULT</button>
+            
+            <button onclick="UI.export()" style="background:transparent; border:1px solid var(--border); color:#8b949e; margin-top:30px; font-size:0.75rem;">
+                Backup Vault (Encrypted JSON)
+            </button>
         `;
         this.refresh();
     },
@@ -102,28 +248,37 @@ const UI = {
         const m = document.getElementById('m-pass').value;
         const l = document.getElementById('l-in').value;
         const len = parseInt(document.getElementById('p-len').value);
-        const opt = { u: document.getElementById('c-u').checked, l: document.getElementById('c-l').checked, n: document.getElementById('c-n').checked, s: document.getElementById('c-s').checked };
+        const opt = { 
+            u: document.getElementById('c-u').checked, 
+            l: document.getElementById('c-l').checked, 
+            n: document.getElementById('c-n').checked, 
+            s: document.getElementById('c-s').checked 
+        };
         
         if(!m || !l) return alert("Fill Master Password and Service Name!");
+        if(!opt.u && !opt.l && !opt.n && !opt.s) return alert("Select at least one character type!");
         
         const raw = CryptoEngine.generateRaw(len, opt);
         const enc = await CryptoEngine.encrypt(raw, m);
-        VaultStorage.add({ label: l, ...enc, id: Date.now() });
+        VaultStorage.add({ label: l.toUpperCase(), ...enc, id: Date.now() });
+        
+        document.getElementById('l-in').value = '';
         this.refresh();
     },
     refresh() {
         const list = document.getElementById('v-list');
         const data = VaultStorage.get();
-        list.innerHTML = '<h3 style="font-size:0.9rem; margin-top:20px;">SAVED ENTRIES</h3>';
+        list.innerHTML = '<h3 style="font-size:0.8rem; margin-top:25px; opacity:0.5; text-align:center;">ENCRYPTED DATABASE</h3>';
+        
         data.forEach(item => {
             const div = document.createElement('div');
             div.className = 'vault-card';
             div.innerHTML = `
-                <strong>${item.label}</strong>
-                <button class="delete-btn" onclick="UI.del('${item.id}')">Delete</button>
-                <div style="margin-top:10px;">
-                    <button onclick="UI.reveal('${item.id}')" style="width:auto; padding:5px 10px;">Reveal</button>
-                    <span id="p-${item.id}" style="margin-left:10px; color:var(--accent); font-weight:bold;"></span>
+                <span class="entry-label">${item.label}</span>
+                <button class="delete-btn" onclick="UI.del('${item.id}')">✕</button>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <button onclick="UI.reveal('${item.id}')" style="width:auto; padding:6px 12px; margin:0; font-size:0.7rem;">Reveal</button>
+                    <span id="p-${item.id}" style="color:var(--accent); font-weight:bold; letter-spacing:1px; font-family:monospace;"></span>
                 </div>
             `;
             list.appendChild(div);
@@ -131,20 +286,31 @@ const UI = {
     },
     async reveal(id) {
         const m = document.getElementById('m-pass').value;
-        if(!m) return alert("Enter Master Key!");
+        if(!m) return alert("Enter Master Key to Decrypt!");
+        
         const entry = VaultStorage.get().find(e => e.id == id);
         const pass = await CryptoEngine.decrypt(entry, m);
+        
         const span = document.getElementById(`p-${id}`);
         span.innerText = pass;
-        setTimeout(() => span.innerText = '', 5000);
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            span.innerText = '';
+        }, 5000);
     },
-    del(id) { if(confirm("Delete?")) { VaultStorage.delete(id); this.refresh(); } },
+    del(id) {
+        if(confirm("Permanently delete this encrypted entry?")) {
+            VaultStorage.delete(id);
+            this.refresh();
+        }
+    },
     export() {
         const data = localStorage.getItem(VaultStorage.KEY);
         const blob = new Blob([data], {type: 'application/json'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'vault_backup.json';
+        a.download = `vault_backup_${new Date().toISOString().slice(0,10)}.json`;
         a.click();
     }
 };
