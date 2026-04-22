@@ -3,15 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vault | Private Password Manager</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Vault | Local Secure Manager</title>
+    <style>
+        :root { --bg: #0f0f0f; --paper: #1a1a1a; --accent: #00ff41; --text: #fafafa; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', monospace; display: flex; justify-content: center; padding: 20px; }
+        .container { width: 100%; max-width: 450px; background: var(--paper); padding: 25px; border-radius: 12px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { border-bottom: 2px solid var(--accent); padding-bottom: 10px; font-size: 1.4rem; letter-spacing: 2px; }
+        input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 6px; border: 1px solid #333; background: #222; color: white; box-sizing: border-box; }
+        button { background: var(--accent); color: black; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; }
+        button:hover { background: #00cc33; transform: translateY(-2px); }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #111; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.8rem; }
+        .vault-card { background: #222; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 4px solid var(--accent); position: relative; }
+        .delete-btn { position: absolute; top: 10px; right: 10px; color: #ff4444; cursor: pointer; background: none; width: auto; padding: 0; }
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
-    <div id="app">
-        </div>
 
-    <script src="crypto.js"></script>
-    <script src="storage.js"></script>
-    <script src="app.js"></script>
+<div class="container" id="app">
+    </div>
+
+<script>
+/** 1. ENCRYPTION ENGINE (CryptoEngine) **/
+const CryptoEngine = {
+    ITERATIONS: 310000,
+    async deriveKey(password, salt) {
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+        return crypto.subtle.deriveKey(
+            { name: 'PBKDF2', salt, iterations: this.ITERATIONS, hash: 'SHA-256' },
+            keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+        );
+    },
+    async encrypt(text, master) {
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const key = await this.deriveKey(master, salt);
+        const encoded = new TextEncoder().encode(text);
+        const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded);
+        return {
+            ct: btoa(String.fromCharCode(...new Uint8Array(ct))),
+            iv: btoa(String.fromCharCode(...iv)),
+            salt: btoa(String.fromCharCode(...salt))
+        };
+    },
+    async decrypt(data, master) {
+        try {
+            const salt = new Uint8Array(atob(data.salt).split('').map(c => c.charCodeAt(0)));
+            const iv = new Uint8Array(atob(data.iv).split('').map(c => c.charCodeAt(0)));
+            const ct = new Uint8Array(atob(data.ct).split('').map(c => c.charCodeAt(0)));
+            const key = await this.deriveKey(master, salt);
+            const dec = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+            return new TextDecoder().decode(dec);
+        } catch (e) { return "INVALID MASTER KEY"; }
+    },
+    generateRaw(len, opt) {
+        let p = '';
+        if(opt.u) p += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        if(opt.l) p += 'abcdefghijklmnopqrstuvwxyz';
+        if(opt.n) p += '0123456789';
+        if(opt.s) p += '!@#$%^&*()_+';
+        const arr = new Uint32Array(len);
+        crypto.getRandomValues(arr);
+        return Array.from(arr).map(x => p[x % p.length]).join('');
+    }
+};
+
+/** 2. LOCAL STORAGE (VaultStorage) **/
+const VaultStorage = {
+    KEY: 'vlt_local_storage',
+    get() { return JSON.parse(localStorage.getItem(this.KEY) || '[]'); },
+    save(data) { localStorage.setItem(this.KEY, JSON.stringify(data)); },
+    add(entry) { const d = this.get(); d.push(entry); this.save(d); },
+    delete(id) { const d = this.get().filter(i => i.id != id); this.save(d); }
+};
+
+/** 3. INTERFACE LOGIC (UI) **/
+const UI = {
+    render() {
+        document.getElementById('app').innerHTML = `
+            <h1>🔐 VAULT v1.0</h1>
+            <input type="password" id="m-pass" placeholder="Master Password">
+            <div class="options-grid">
+                <label><input type="checkbox" id="c-u" checked> ABC</label>
+                <label><input type="checkbox" id="c-l" checked> abc</label>
+                <label><input type="checkbox" id="c-n" checked> 123</label>
+                <label><input type="checkbox" id="c-s" checked> !@#</label>
+            </div>
+            <input type="number" id="p-len" value="16" min="6" max="64">
+            <input type="text" id="l-in" placeholder="Service (e.g. Github)">
+            <button onclick="UI.handleSave()">GENERATE & SAVE</button>
+            <div id="v-list"></div>
+            <button onclick="UI.export()" style="background:#333; color:white; margin-top:20px;">BACKUP VAULT</button>
+        `;
+        this.refresh();
+    },
+    async handleSave() {
+        const m = document.getElementById('m-pass').value;
+        const l = document.getElementById('l-in').value;
+        const len = parseInt(document.getElementById('p-len').value);
+        const opt = { u: document.getElementById('c-u').checked, l: document.getElementById('c-l').checked, n: document.getElementById('c-n').checked, s: document.getElementById('c-s').checked };
+        
+        if(!m || !l) return alert("Fill Master Password and Service Name!");
+        
+        const raw = CryptoEngine.generateRaw(len, opt);
+        const enc = await CryptoEngine.encrypt(raw, m);
+        VaultStorage.add({ label: l, ...enc, id: Date.now() });
+        this.refresh();
+    },
+    refresh() {
+        const list = document.getElementById('v-list');
+        const data = VaultStorage.get();
+        list.innerHTML = '<h3 style="font-size:0.9rem; margin-top:20px;">SAVED ENTRIES</h3>';
+        data.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'vault-card';
+            div.innerHTML = `
+                <strong>${item.label}</strong>
+                <button class="delete-btn" onclick="UI.del('${item.id}')">Delete</button>
+                <div style="margin-top:10px;">
+                    <button onclick="UI.reveal('${item.id}')" style="width:auto; padding:5px 10px;">Reveal</button>
+                    <span id="p-${item.id}" style="margin-left:10px; color:var(--accent); font-weight:bold;"></span>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    },
+    async reveal(id) {
+        const m = document.getElementById('m-pass').value;
+        if(!m) return alert("Enter Master Key!");
+        const entry = VaultStorage.get().find(e => e.id == id);
+        const pass = await CryptoEngine.decrypt(entry, m);
+        const span = document.getElementById(`p-${id}`);
+        span.innerText = pass;
+        setTimeout(() => span.innerText = '', 5000);
+    },
+    del(id) { if(confirm("Delete?")) { VaultStorage.delete(id); this.refresh(); } },
+    export() {
+        const data = localStorage.getItem(VaultStorage.KEY);
+        const blob = new Blob([data], {type: 'application/json'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'vault_backup.json';
+        a.click();
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => UI.render());
+</script>
 </body>
 </html>
