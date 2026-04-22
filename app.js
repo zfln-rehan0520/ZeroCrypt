@@ -1,7 +1,7 @@
 const UI = {
    render() {
     document.getElementById('app').innerHTML = `
-        <h1>🔐 Password Generator & Manager 🔐 (v1.02)</h1>
+        <h1>🔐 ZeroCrypt 🔐 (v1.02)</h1>
         
         <p class="highlight-credit">
             Designed by MOHAMMED REHAN | @zfln-rehan0520
