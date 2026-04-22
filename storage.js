@@ -1,8 +1,20 @@
+/**
+ * storage.js - LocalStorage Management
+ * General Purpose Edition
+ */
+
 const VaultStorage = {
-    KEY: 'rehan_vault_data',
+    // We use a neutral key for general public use
+    KEY: 'vlt_encrypted_vault', 
     
     get() {
-        return JSON.parse(localStorage.getItem(this.KEY) || '[]');
+        try {
+            const data = localStorage.getItem(this.KEY);
+            return data ? JSON.parse(data) : [];
+        } catch (e) {
+            console.error("Vault Error: Could not parse storage.", e);
+            return [];
+        }
     },
     
     save(data) {
@@ -13,5 +25,11 @@ const VaultStorage = {
         const db = this.get();
         db.push(entry);
         this.save(db);
+    },
+
+    deleteEntry(id) {
+        const db = this.get();
+        const filteredDb = db.filter(item => item.id != id);
+        this.save(filteredDb);
     }
 };
