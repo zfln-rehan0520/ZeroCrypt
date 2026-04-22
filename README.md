@@ -50,4 +50,36 @@ Every password is encrypted using **AES-256-GCM** (industry-standard encryption)
 
 ---
 
-## 🛡️ Security Architecture
+## Getting Started
+
+```bash
+git clone https://github.com/zfln-rehan0520/password-generator-manager.git
+cd password-generator-manager
+# Open index.html in any modern browser
+```
+
+No installation or build step needed.
+
+---
+
+## Security
+
+| Layer | Algorithm |
+|-------|-----------|
+| Randomness | `crypto.getRandomValues()` |
+| Hashing | SHA-256 |
+| Key Derivation | PBKDF2 + SHA-256 (310,000 rounds) |
+| Encryption | AES-256-GCM |
+
+---
+
+## ⚠️ Note
+
+Never forget your Master Password — it cannot be recovered. Clearing browser storage will delete your vault permanently.
+
+---
+
+## License
+
+MIT © [zfln-rehan0520](https://github.com/zfln-rehan0520)
+
