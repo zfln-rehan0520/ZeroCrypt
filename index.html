@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecurePass | LYBERNET</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Password Manager</h1>
+        <div class="display-container">
+            <input type="text" id="password-display" readonly placeholder="P@ssw0rd123!">
+            <button id="copy-btn">Copy</button>
+        </div>
+
+        <div class="controls">
+            <label>Length: <span id="length-val">16</span></label>
+            <input type="range" id="length-slider" min="8" max="50" value="16">
+            
+            <div class="checkboxes">
+                <label><input type="checkbox" id="include-symbols" checked> Symbols</label>
+                <label><input type="checkbox" id="include-numbers" checked> Numbers</label>
+            </div>
+        </div>
+
+        <button id="generate-btn" class="main-btn">Generate Secure Password</button>
+    </div>
+    <script src="assets/script.js"></script>
+</body>
+</html>
