@@ -1,49 +1,46 @@
 const UI = {
-    render() {
-        document.getElementById('app').innerHTML = `
-            <h1>🔐 Password Generator & Manager (v1.02)</h1>
-            <p style="font-size:0.7rem; text-align:center; opacity:0.6; margin-bottom:20px;">
-                Designed by MOHAMMED REHAN | @zfln-rehan0520
-            </p>
-            
-            <label>Master Security Key</label>
-            <input type="password" id="m-pass" placeholder="••••••••">
-            
-            <div class="options-grid">
-                <label class="option-item"><input type="checkbox" id="c-u" checked> Uppercase</label>
-                <label class="option-item"><input type="checkbox" id="c-l" checked> Lowercase</label>
-                <label class="option-item"><input type="checkbox" id="c-n" checked> Numbers</label>
-                <label class="option-item"><input type="checkbox" id="c-s" checked> Symbols</label>
-            </div>
-            
-            <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
-                <span style="font-size:0.8rem; opacity:0.6;">Length:</span>
-                <input type="number" id="p-len" value="16" min="6" max="64" style="margin:0; width: 80px;">
-            </div>
+   render() {
+    document.getElementById('app').innerHTML = `
+        <h1>🔐 Password Generator & Manager 🔐 (v1.02)</h1>
+        
+        <p class="highlight-credit">
+            Designed by MOHAMMED REHAN | @zfln-rehan0520
+        </p>
+        
+        <label>Master Security Key</label>
+        <input type="password" id="m-pass" placeholder="••••••••">
+        
+        <div class="options-grid">
+            <label class="option-item"><input type="checkbox" id="c-u" checked> Uppercase</label>
+            <label class="option-item"><input type="checkbox" id="c-l" checked> Lowercase</label>
+            <label class="option-item"><input type="checkbox" id="c-n" checked> Numbers</label>
+            <label class="option-item"><input type="checkbox" id="c-s" checked> Symbols</label>
+        </div>
+        
+        <div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+            <span style="font-size:0.8rem; opacity:0.6;">Length:</span>
+            <input type="number" id="p-len" value="16" min="6" max="64" style="margin:0; width: 80px;">
+        </div>
 
-            <label>Service Name</label>
-            <input type="text" id="l-in" placeholder="e.g. GitHub">
-            
-            <button onclick="UI.handleSave()">Generate & Save</button>
-            
-            <div id="v-list"></div>
-            
-            <div style="display: flex; gap: 10px; margin-top: 30px;">
-                <button onclick="UI.export()" style="background:transparent; border:1px solid var(--border); color:#8b949e; font-size:0.7rem;">
-                    Backup (.json)
-                </button>
-                <button onclick="document.getElementById('file-input').click()" style="background:transparent; border:1px solid var(--border); color:#8b949e; font-size:0.7rem;">
-                    Restore (.json)
-                </button>
-            </div>
-            <input type="file" id="file-input" class="hidden" accept=".json" onchange="UI.handleImport(event)">
-            
-            <p style="font-size: 0.6rem; text-align: center; opacity: 0.4; margin-top: 20px;">
-                Note: Losing your Master Key means losing access to your data forever.
-            </p>
-        `;
-        this.refresh();
-    },
+        <label>Service Name</label>
+        <input type="text" id="l-in" placeholder="e.g. GitHub">
+        
+        <button onclick="UI.handleSave()">Generate & Save</button>
+        
+        <div id="v-list"></div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 30px;">
+            <button onclick="UI.export()" class="btn-white">Backup (.json)</button>
+            <button onclick="document.getElementById('file-input').click()" class="btn-white">Restore (.json)</button>
+        </div>
+        <input type="file" id="file-input" class="hidden" accept=".json" onchange="UI.handleImport(event)">
+        
+        <p class="highlight-warning">
+            Note: Losing your Master Key means losing access to your data forever.
+        </p>
+    `;
+    this.refresh();
+},
 
     async handleSave() {
         const m = document.getElementById('m-pass').value;
