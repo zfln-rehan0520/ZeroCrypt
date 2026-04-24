@@ -1,7 +1,7 @@
 :root { 
     --bg: #0d1117; 
     --paper: #161b22; 
-   --accent: #ff8c00;
+    --accent: #ff8c00;
     --text: #c9d1d9; 
     --border: #30363d;
 }
@@ -111,35 +111,52 @@ button:hover {
 
 .vault-card { 
     background: #21262d; 
-    padding: 20px; /* Increased padding for better internal space */
-    padding-right: 45px; /* Extra space on the right so buttons/text don't hit the X */
+    padding: 20px; 
+    padding-right: 55px; /* Ensures text never overlaps the delete button */
     border-radius: 8px; 
     margin-top: 15px; 
     border: 1px solid var(--border);
     position: relative; 
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Adds natural spacing between the Service Name and Reveal button */
+    gap: 10px;
+    cursor: default; /* Card itself isn't a button */
+}
+
+.entry-label { 
+    font-weight: bold; 
+    color: #fff; 
+    display: block; 
+    margin-bottom: 5px;
+    pointer-events: none; /* Makes the service name non-clickable */
+    user-select: text;
 }
 
 .delete-btn {
     position: absolute;
-    top: 10px;    /* Moved slightly up */
-    right: 10px;  /* Moved slightly right */
+    top: 10px;    
+    right: 10px;  
     color: #00ffff !important; 
     cursor: pointer;
-    background: none;
-    border: none;
-    font-size: 1.2rem; /* Made slightly larger so it's easier to hit accurately */
-    padding: 5px;      /* Gives it its own dedicated hit-box */
+    background: none !important;
+    border: none !important;
+    font-size: 1.2rem; 
+    padding: 8px; /* Bigger hit-box for accuracy */
     line-height: 1;
+    transition: transform 0.2s, color 0.2s;
 }
 
-/* Add this to ensure the Reveal button doesn't stretch too wide */
+.delete-btn:hover {
+    background: transparent !important;
+    color: #ff4d4d !important; /* Turns red on hover */
+    transform: scale(1.2);
+}
+
 .reveal-btn {
     width: fit-content; 
     padding: 8px 15px;
 }
+
 .import-zone {
     margin-top: 20px;
     padding: 15px;
@@ -151,13 +168,13 @@ button:hover {
     cursor: pointer;
     transition: 0.2s;
 }
+
 .import-zone:hover {
     border-color: var(--accent);
     color: #fff;
 }
 
 .hidden { display: none; }
-.entry-label { font-weight: bold; color: #fff; display: block; margin-bottom: 10px; }
 
 .highlight-credit {
     text-align: center;
@@ -194,23 +211,3 @@ button:hover {
     background: #e0e0e0 !important;
     transform: translateY(-2px);
 }
-
-.delete-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    color: #00ffff !important; 
-    cursor: pointer;
-    background: none;
-    border: none;
-    font-size: 1rem;
-}
-
-/* --- THE FIX START --- */
-/* This prevents the neon green block from appearing on the X button */
-.delete-btn:hover {
-    background: transparent !important;
-    color: #ff4d4d !important; /* Optional: Changes X to red on hover for clarity */
-    transform: scale(1.1);
-}
-/* --- THE FIX END --- */
