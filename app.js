@@ -1,3 +1,4 @@
+
 const UI = {
     render() {
         document.getElementById('app').innerHTML = `
@@ -85,17 +86,21 @@ const UI = {
             const div = document.createElement('div');
             div.className = 'vault-card';
             
-            // We use event.stopPropagation() on the delete click to prevent 
-            // the whole card from reacting when you click the X.
+            // Build card content manually to attach the specific listener
             div.innerHTML = `
                 <span class="entry-label">${item.label}</span>
-                <button class="delete-btn" onclick="UI.del(event, '${item.id}')">✕</button>
+                <button class="delete-btn" id="del-${item.id}">✕</button>
                 <div style="display:flex; align-items:center; gap:10px;">
                     <button onclick="UI.reveal('${item.id}')" style="width:auto; padding:6px 12px; margin:0; font-size:0.7rem;">Reveal</button>
                     <span id="p-${item.id}" style="color:var(--accent); font-weight:bold; font-family:monospace;"></span>
                 </div>
             `;
             list.appendChild(div);
+
+            // Add the listener explicitly to the button only
+            document.getElementById(`del-${item.id}`).addEventListener('click', (e) => {
+                UI.del(e, item.id);
+            });
         });
     },
 
@@ -110,8 +115,11 @@ const UI = {
     },
 
     del(event, id) {
-        // Prevents the click from bubbling up to the parent card
-        event.stopPropagation(); 
+        // This is the absolute blocker for event bubbling
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         
         if(confirm("Delete permanently?")) {
             VaultStorage.delete(id);
