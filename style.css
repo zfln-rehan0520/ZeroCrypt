@@ -63,7 +63,7 @@ input, button {
 input:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 5px rgba(0, 255, 65, 0.2);
+    box-shadow: 0 0 5px rgba(255, 140, 0, 0.2);
 }
 
 .options-grid { 
@@ -109,46 +109,55 @@ button:hover {
     transform: translateY(-2px); 
 }
 
+/* VAULT CARD: Optimized with extra padding and default cursor */
 .vault-card { 
     background: #21262d; 
     padding: 20px; 
-    padding-right: 55px; /* Ensures text never overlaps the delete button */
+    padding-right: 60px; /* Big buffer so text never hits the X */
     border-radius: 8px; 
     margin-top: 15px; 
     border: 1px solid var(--border);
     position: relative; 
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    cursor: default; /* Card itself isn't a button */
+    gap: 12px;
+    cursor: default;
 }
 
+/* ENTRY LABEL: Crucial fix to prevent ghost clicks */
 .entry-label { 
     font-weight: bold; 
     color: #fff; 
     display: block; 
-    margin-bottom: 5px;
-    pointer-events: none; /* Makes the service name non-clickable */
-    user-select: text;
+    margin-bottom: 5px; 
+    pointer-events: none; /* Mouse ignores the text entirely */
+    user-select: text;    /* Still allows you to copy the name if needed */
 }
 
+/* DELETE BUTTON: Precision hit-box and color transition */
 .delete-btn {
     position: absolute;
-    top: 10px;    
-    right: 10px;  
+    top: 8px;    
+    right: 8px;  
     color: #00ffff !important; 
     cursor: pointer;
-    background: none !important;
+    background: transparent !important;
     border: none !important;
     font-size: 1.2rem; 
-    padding: 8px; /* Bigger hit-box for accuracy */
+    padding: 5px !important;
+    width: 30px !important;
+    height: 30px !important;
     line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: transform 0.2s, color 0.2s;
+    z-index: 5;
 }
 
 .delete-btn:hover {
     background: transparent !important;
-    color: #ff4d4d !important; /* Turns red on hover */
+    color: #ff4d4d !important; /* Warning Red */
     transform: scale(1.2);
 }
 
