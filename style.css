@@ -111,24 +111,35 @@ button:hover {
 
 .vault-card { 
     background: #21262d; 
-    padding: 15px; 
+    padding: 20px; /* Increased padding for better internal space */
+    padding-right: 45px; /* Extra space on the right so buttons/text don't hit the X */
     border-radius: 8px; 
     margin-top: 15px; 
     border: 1px solid var(--border);
     position: relative; 
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adds natural spacing between the Service Name and Reveal button */
 }
 
-.delete-btn { 
-    position: absolute; 
-    top: 12px; 
-    right: 12px; 
-    color: #00ffff; 
-    cursor: pointer; 
-    background: none; 
+.delete-btn {
+    position: absolute;
+    top: 10px;    /* Moved slightly up */
+    right: 10px;  /* Moved slightly right */
+    color: #00ffff !important; 
+    cursor: pointer;
+    background: none;
     border: none;
-    font-size: 0.8rem;
+    font-size: 1.2rem; /* Made slightly larger so it's easier to hit accurately */
+    padding: 5px;      /* Gives it its own dedicated hit-box */
+    line-height: 1;
 }
 
+/* Add this to ensure the Reveal button doesn't stretch too wide */
+.reveal-btn {
+    width: fit-content; 
+    padding: 8px 15px;
+}
 .import-zone {
     margin-top: 20px;
     padding: 15px;
